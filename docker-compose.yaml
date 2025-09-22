@@ -1,0 +1,96 @@
+services:
+  gateway:
+    build: ./services/gateway
+    container_name: ft_gateway
+    env_file: .env
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      - SQLITE_FILE=/data/db.sqlite
+    volumes:
+      - ./data:/data
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user
+      - tournament
+      - match
+    networks:
+      - ft_net
+
+  user:
+    build: ./services/user
+    container_name: ft_user
+    env_file: .env
+    environment:
+      - PORT=3001
+      - SQLITE_FILE=/data/db_user.sqlite
+    volumes:
+      - ./data:/data
+    networks:
+      - ft_net
+
+  tournament:
+    build: ./services/tournament
+    container_name: ft_tournament
+    env_file: .env
+    environment:
+      - PORT=3002
+      - SQLITE_FILE=/data/db_tournament.sqlite
+    volumes:
+      - ./data:/data
+    networks:
+      - ft_net
+
+  match:
+    build: ./services/match
+    container_name: ft_match
+    env_file: .env
+    environment:
+      - PORT=3003
+      - SQLITE_FILE=/data/db_match.sqlite
+    volumes:
+      - ./data:/data
+    ports:
+      - "3003:3003"
+    networks:
+      - ft_net
+
+  chat:
+    build: ./services/chat
+    container_name: ft_chat
+    env_file: .env
+    environment:
+      - PORT=3004
+      - SQLITE_FILE=/data/db_chat.sqlite
+    volumes:
+      - ./data:/data
+    networks:
+      - ft_net
+
+  ai:
+    build: ./services/ai
+    container_name: ft_ai
+    env_file: .env
+    environment:
+      - PORT=3005
+    networks:
+      - ft_net
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: ft_nginx
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/certs:/etc/nginx/certs:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - gateway
+    networks:
+      - ft_net
+
+networks:
+  ft_net:
+    driver: bridge
