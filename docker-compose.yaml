@@ -21,6 +21,19 @@ services:
       - ft_net
     command: nodemon index.js
 
+  frontend:
+    build: ./frontend
+    container_name: ft_frontend
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "8080:8080"
+    networks:
+      - ft_net
+    command: npm run dev
 
   user:
     build: ./services/user
