@@ -1,5 +1,7 @@
-# filepath: /Users/ycheroua/CorCur42/ft_transcendence/ft_transcendence/services/tournament/Dockerfile
 FROM ft_base_node
+
+# Switch to root to install dependencies
+USER root
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -13,8 +15,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Switch back to non-root user
+USER nextjs
+
 # Expose the port the service will run on
-EXPOSE 3002
+EXPOSE 3000
 
 # Start the application
 CMD ["npm", "start"]
