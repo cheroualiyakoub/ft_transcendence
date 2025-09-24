@@ -1,3 +1,4 @@
+
 services:
   gateway:
     build: ./services/gateway
@@ -8,7 +9,8 @@ services:
       - NODE_ENV=development
       - SQLITE_FILE=/data/db.sqlite
     volumes:
-      - ./data:/data
+      - ./services/gateway:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
@@ -17,6 +19,8 @@ services:
       - match
     networks:
       - ft_net
+    command: nodemon index.js
+
 
   user:
     build: ./services/user
